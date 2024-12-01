@@ -1,4 +1,5 @@
 import base64
+import os
 import threading
 import time
 import uuid
@@ -604,6 +605,8 @@ class DbtDatabricksAllPurposeClusterPythonJobHelper(
 
 class SessionHelper(PythonJobHelper):
     def __init__(self, parsed_model: Dict, credentials: DatabricksCredentials) -> None:
+        if os.getenv("DBT_DATABRICKS_SESSION_CONNECTION", "False").upper() != "TRUE":
+            raise RuntimeError("Python session is cannot be used without session connection.")
         pass
 
     def submit(self, compiled_code: str) -> Any:
