@@ -528,3 +528,21 @@ class WorkflowPythonJobHelper(BaseDatabricksHelper):
         return PythonNotebookWorkflowSubmitter.create(
             self.api_client, self.tracker, self.parsed_model
         )
+
+
+class SessionHelper(PythonJobHelper):
+    def __init__(self, parsed_model: Dict, credentials: DatabricksCredentials) -> None:
+        if os.getenv("DBT_DATABRICKS_SESSION_CONNECTION", "False").upper() != "TRUE":
+            raise RuntimeError(
+                "Python session is cannot be used without session connection."
+            )
+        pass
+
+    def submit(self, compiled_code: str) -> Any:
+        try:
+            from pyspark.sql import SparkSession
+
+            spark = SparkSession.getActiveSession()
+            exec(compiled_code, {"spark": spark})
+        except Exception as e:
+            raise DbtRuntimeError(f"Python model failed with traceback as:\n{e}")
