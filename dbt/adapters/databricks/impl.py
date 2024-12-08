@@ -42,6 +42,7 @@ from dbt.adapters.databricks.connections import (
 )
 from dbt.adapters.databricks.python_models.python_submissions import (
     AllPurposeClusterPythonJobHelper,
+    SessionHelper,
     JobClusterPythonJobHelper,
     ServerlessClusterPythonJobHelper,
     WorkflowPythonJobHelper,
@@ -667,6 +668,7 @@ class DatabricksAdapter(SparkAdapter):
         return {
             "job_cluster": JobClusterPythonJobHelper,
             "all_purpose_cluster": AllPurposeClusterPythonJobHelper,
+            "session": SessionHelper,
             "serverless_cluster": ServerlessClusterPythonJobHelper,
             "workflow_job": WorkflowPythonJobHelper,
         }
